@@ -37,3 +37,6 @@ Verificare la versione '**python -m django --version**'
 
 Creare la cartella del progetto Django '**django-admin startproject django_project**'
 
+Per consultare il funzionamento dei file **.py** all'interno del django_project appena creato, andare al link [Django_tutorial01](https://docs.djangoproject.com/en/4.0/intro/tutorial01/)
+
+Per far partire Django spostarsi nel terminale all'interno della cartella Django_project e lanciare il file manage.py col comado '**python manage.py runserver**'
