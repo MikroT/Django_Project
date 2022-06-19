@@ -44,3 +44,5 @@ Per far partire Django spostarsi nel terminale all'interno della cartella Django
 Vedremo che in console sarà partito un webserver sulla porta 8000 in localhost accessibile all'indirizzo 'http://127.0.0.1:8000/'
 
 Digitando il link sul browser se tutto va bene vedremo la pagina che indicherà il corretto avvio di Django.
+
+Nel file **manage.py** inserire i modelli python necessari alla nostra applicazione
