@@ -40,3 +40,7 @@ Creare la cartella del progetto Django '**django-admin startproject django_proje
 Per consultare il funzionamento dei file **.py** all'interno del django_project appena creato, andare al link [Django_tutorial01](https://docs.djangoproject.com/en/4.0/intro/tutorial01/)
 
 Per far partire Django spostarsi nel terminale all'interno della cartella Django_project e lanciare il file manage.py col comado '**python manage.py runserver**'
+
+Vedremo che in console sarà partito un webserver sulla porta 8000 in localhost accessibile all'indirizzo 'http://127.0.0.1:8000/'
+
+Digitando il link sul browser se tutto va bene vedremo la pagina che indicherà il corretto avvio di Django.
