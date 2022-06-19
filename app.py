@@ -1,6 +1,6 @@
 class Prova:
-        a = 'mirko'
-        b = 'tozzi'
+    a = 'mirko'
+    b = 'tozzi'
 
 n1 = Prova()
 
