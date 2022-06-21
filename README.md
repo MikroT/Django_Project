@@ -46,3 +46,20 @@ Vedremo che in console sarà partito un webserver sulla porta 8000 in localhost 
 Digitando il link sul browser se tutto va bene vedremo la pagina che indicherà il corretto avvio di Django.
 
 Nel file **manage.py** inserire i modelli python necessari alla nostra applicazione
+
+Dopo l'avvio del server Django vedremo un stringa come la seguente:
+    
+    Watching for file changes with StatReloader
+    Performing system checks...
+    System check identified no issues (0 silenced).
+    You have 18 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+    Run 'python manage.py migrate' to apply them.
+    June 21, 2022 - 18:42:57
+    Django version 4.0.5, using settings 'django_project.settings'
+    Starting development server at http://127.0.0.1:8000/
+    Quit the server with CONTROL-C.
+
+Django sta indicando che ci sono 18 migrazioni non applicate; le migrazioni un metodo usato da Django per modifiche al database dal python, e che Django ci lascia la possibilità di applicare a mano, evitando quindi un probabile errore in caso in cui le applicasse in maniera automatica.
+
+Alla prima installazione Django ha delle app preinstallate che effettivamente hanno apportato modifiche al DB, e per questo Django ci chiede se vogliamo applicare le migrazioni
+* Per applicare le modifiche dovremo eseguire il comado **python manage.py migrate**
