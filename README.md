@@ -68,4 +68,41 @@ Alla prima installazione Django ha delle app preinstallate che effettivamente ha
 
 Per creare un'app in Django eseguire il comando **python manage.py startapp myapp** dove myapp è il nome dell'app che vogliamo creare all'interno di Django.
 
-Vedremo che è stata creata una cartella con il nome dell'app ed all'interno troveremo un file models.py
+Vedremo che è stata creata una cartella con il nome dell'app ed all'interno troveremo un file models.py dove inseriremo i nostri modelli.
+
+Dopo l'inserimento dei modelli nella nostra app, se avviamo il Django server, noteremo che Django non avvierà la nuova app, questo perchò dovremo andare all'interno del file **settings.py** presente nella cartella del progetto ed inserire la nuova app nella lista **INSTALLED_APPS**
+
+la stringa dovrà essere inserita **ALL'INIZIO** della lista e definita come: **'myapp.apps.MyappConfig'**
+
+**QUESTO INSERIMENTO DEVE ESSERE FATTO OGNI VOLTA CHE VIENE CREATA UN'APP**
+
+Dopo aver inserito la nuova app, l'applicazione fa parte di Django, che tuttavia ancora non conosce il fatto di voler aggiornare il database con delle nuove caratteristiche. Per farlo dobbiamo lanciare la migrazione che dipende da che cosa è stato inserito nel file **models.py** presente nella cartella del progetto.
+
+Per chiedere a Django di preparare la migrazione a partire da un nuovo file eseguire i comandi:
+
+**python manage.py makemigrations**
+
+**python manage.py migrate**
+
+Noteremo che Django applicherà la migrazione, creerà dei nuovi file ed aggiornerò il DB.
+
+Riepilogo:
+
+* Creare Progetto Django
+* Creare App Django
+* Dentro App in Django c'è un file models
+* Il file models.py rappresenta la chiave dei modelli dati dove creare le tabelle dati
+
+L'ultimo passaggio da fare è abilitare l'interfaccia WEB in Django; l'applicazione 'admin' gia presente sarà responsabile di questo.
+
+Per abilitarla dobbiamo:
+1. Creare un utente
+2. Indicare a Django che vogliamo visualizzare la nostra applicazione
+
+    1. Creare un utente amministratore con il comando **python manage.py createsuperuser**
+    * Indicare i dati richiesti come e-mail e password 
+    * Accedre alla console amministrazione aggiungendo /admin alla fine dell'url dopo aver eseguito il comando per far partire il django server
+
+    2. Per rendere la nostra applicazione modificabile dall'interfaccia admin di Django editare il file *admin.py* presente nella cartella dell'applicazione ed aggiungere le stringhe necessarie per esempio (Question è il nome di un modello di esempio)
+    * **from .models import Question**
+    * **admin.site.register(Question)**
