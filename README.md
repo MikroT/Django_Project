@@ -106,3 +106,5 @@ Per abilitarla dobbiamo:
     2. Per rendere la nostra applicazione modificabile dall'interfaccia admin di Django editare il file *admin.py* presente nella cartella dell'applicazione ed aggiungere le stringhe necessarie per esempio (Question è il nome di un modello di esempio)
     * **from .models import Question**
     * **admin.site.register(Question)**
+
+Se accediamo a questo punto all'interfaccia admin della nostra applicazione vedremo che sarà presente il nostro modello che in base alle sue caratteristiche sarò in grado di effettuare inserimenti nel Database con le relative relazioni. 
