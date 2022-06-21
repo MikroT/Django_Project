@@ -63,3 +63,9 @@ Django sta indicando che ci sono 18 migrazioni non applicate; le migrazioni un m
 
 Alla prima installazione Django ha delle app preinstallate che effettivamente hanno apportato modifiche al DB, e per questo Django ci chiede se vogliamo applicare le migrazioni
 * Per applicare le modifiche dovremo eseguire il comado **python manage.py migrate**
+
+**CREAZIONE APP IN DJANGO**
+
+Per creare un'app in Django eseguire il comando **python manage.py startapp myapp** dove myapp è il nome dell'app che vogliamo creare all'interno di Django.
+
+Vedremo che è stata creata una cartella con il nome dell'app ed all'interno troveremo un file models.py
