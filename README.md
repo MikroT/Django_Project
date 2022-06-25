@@ -103,8 +103,9 @@ Per abilitarla dobbiamo:
     * Indicare i dati richiesti come e-mail e password 
     * Accedre alla console amministrazione aggiungendo /admin alla fine dell'url dopo aver eseguito il comando per far partire il django server
 
-    2. Per rendere la nostra applicazione modificabile dall'interfaccia admin di Django editare il file *admin.py* presente nella cartella dell'applicazione ed aggiungere le stringhe necessarie per esempio (Question è il nome di un modello di esempio)
+    2. Per rendere la nostra applicazione modificabile dall'interfaccia admin di Django editare il file *admin.py* presente nella cartella dell'applicazione ed aggiungere le stringhe necessarie per esempio (Question è il nome di un modello di esempio) come definite nelle classi in models.py
     * **from .models import Question**
     * **admin.site.register(Question)**
 
-Se accediamo a questo punto all'interfaccia admin della nostra applicazione vedremo che sarà presente il nostro modello che in base alle sue caratteristiche sarò in grado di effettuare inserimenti nel Database con le relative relazioni. 
+Se accediamo a questo punto all'interfaccia admin della nostra applicazione vedremo che sarà presente il nostro modello che in base alle sue caratteristiche sarò in grado di effettuare inserimenti nel Database con le relative relazioni.
+
