@@ -1,111 +1,254 @@
-Django Project
-===
-Preparazione VS Code:
-* Installare le estensioni di '**python**' e '**remote container**'
+Creating a Machine Learning Based Web Application Using Django
+==============================================================
+Deploy your Machine Learning model on the web using Python’s famous Django framework and increase its visibility.
+-----------
 
-Creazione della cartella locale del progetto
+We want to deploy their Machine Learning model as a Web Application using Python’s Django framework. For many Data Science and Machine Learning enthusiasts, this could be a good reference for converting their simple .py model files into a much more dynamic and powerful web application that can accept inputs from a user and generate a prediction.
 
-Dal terminale digitare il comando '**git init**'
+For the sake of simplicity of the article, we will be focusing more on how to create a ML based web application rather than spending the majority of time in solving a tough Machine Learning problem. Also, this is not a complete django tutorial but a step in the direction towards becoming an AI/ML developer.
 
-Aprire la cartella in VS Code
+First, we will be creating a simple ML model using the famous titanic dataset and then convert it into a fully functional, dynamic web based application.
 
-Creare il file **README.md** file con estensione markdown
+**Developing Machine Learning Model**
 
-Creare il container di sviluppo .devcontainer:
-* Premere il tasto verde in basso a sinistra ><
-* Scegliere '**Add development container configuration file**'
+As mentioned above, we will be working on the famous titanic dataset that is used to predict the survival of the passengers based on their different attributes (Passenger class, Sex, Age, Fare etc.). Since this a binary classification problem, we would be using Logistic Regression algorithm (a powerful yet simple machine learning algorithm) for creating our model.
 
-    Verrà creata una cartella all' interno della cartella del progetto chiamata .devcontaier
-    Dentro la cartella **.devcontainer** troverete un file *devcontainer.json* ed un file *Dockerfile*.
+The used code can be referred to create the classification model.
 
-Aprire il container di sviluppo premendo il tasto verde in basso a sinistra >< e selezionare 'Reopen in container'
+*Note: Creating a Machine Learning Model is a complete detailed task in itself that contains multiple steps (such as Data Pre-processing, EDA, Feature Engineering, Model Development, Model Validation, Tuning Hyperparameters). Here we are skipping all those steps since we are much more interested in using this model for powering our web based application.*
 
-Creare un file **requirements.txt** per inserire le dipendenze da installare all'interno del container.
+    import pandas as pd
+    import numpy as np
 
-Per installare Django nella documentazione ufficiale troveremo il comando '**python -m pip install Django**' che serve per l'installazione locale.
-Nel nostro caso dovremmo installarla nel container pertanto seguire i passaggi:
-* Scrivere **Django** nel file *requirements.txt*
-* nella console del devcontainer di python aperta precedentemente, digitare il comando '**pip install -r requirements.txt**'
+    from sklearn.model_selection import train_test_split
+    from sklearn.preprocessing import MinMaxScaler
+    from sklearn.linear_model import LogisticRegression
 
-Installato Django nel container dobbiamo importarlo in python
-* Nel terminale digitare '**python**' per aprire una shell di python
-* In python digitare '**import django**'
-* Verificare l'installazione di django con il comando '**print(django.get_version())**'
-* Uscire dalla shell di pytho ctrl-D
+    from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
-Verificare la versione '**python -m django --version**'
+    # load dataset
+    dataset = pd.read_csv('train.csv', encoding='latin-1')
+    dataset = dataset.rename(columns=lambda x: x.strip().lower())
+    dataset.head()
 
-Creare la cartella del progetto Django '**django-admin startproject django_project**'
+    # cleaning missing values
+    dataset = dataset[['pclass', 'sex', 'age', 'sibsp', 'parch', 'fare', 'embarked', 'survived']]
+    dataset['sex'] = dataset['sex'].map({'male':0, 'female':1})
+    dataset['age'] = pd.to_numeric(dataset['age'], errors='coerce')
+    dataset['age'] = dataset['age'].fillna(np.mean(dataset['age']))
 
-Per consultare il funzionamento dei file **.py** all'interno del django_project appena creato, andare al link [Django_tutorial01](https://docs.djangoproject.com/en/4.0/intro/tutorial01/)
+    # dummy variables
+    embarked_dummies = pd.get_dummies(dataset['embarked'])
+    dataset = pd.concat([dataset, embarked_dummies], axis=1)
+    dataset = dataset.drop(['embarked'], axis=1)
 
-Per far partire Django spostarsi nel terminale all'interno della cartella Django_project e lanciare il file manage.py col comado '**python manage.py runserver**'
+    X = dataset.drop(['survived'], axis=1)
+    y = dataset['survived']
 
-Vedremo che in console sarà partito un webserver sulla porta 8000 in localhost accessibile all'indirizzo 'http://127.0.0.1:8000/'
+    # scaling features 
+    sc = MinMaxScaler(feature_range=(0,1))
+    X_scaled = sc.fit_transform(X)
 
-Digitando il link sul browser se tutto va bene vedremo la pagina che indicherà il corretto avvio di Django.
+    # model fit
+    log_model = LogisticRegression(C=1)
+    log_model.fit(X_scaled, y)
 
-Nel file **manage.py** inserire i modelli python necessari alla nostra applicazione
+    # saving model as a pickle
+    import pickle
+    pickle.dump(log_model,open("titanic_survival_ml_model.sav", "wb"))
+    pickle.dump(sc, open("scaler.sav", "wb"))
 
-Dopo l'avvio del server Django vedremo un stringa come la seguente:
+
+Once we have created our final model, we are simply storing this model as a model.sav file (using pickle). Also, notice we are storing our scaler object as a scaler.sav file (since we will be using this same scaling object for transforming our user input to the same level as training data before feeding it to the model).
+Creating our own Django Project
+
+Before creating our django project, first we need to install django into our development machine using the below command.
+
+    pip install django
+
+This will automatically install all the dependencies that the django framework required in order to function properly. If this command is not working for you, please refer to the below link
+
+https://docs.djangoproject.com/en/3.1/topics/install/
+
+Once you have installed the django, you need to open command prompt on your machine (terminal on Ubuntu or Mac) and follow the below steps-
+
+    cd Desktop (you can traverse to whichever location you want to create your project folder)
+
+    mkdir Titanic_Survial_Prediction (you can choose whatever name you want to use for your web application)
+
+    cd Titanic_Survial_Prediction (cd into the folder you just created in the step above)
+
+    django-admin startproject Titanic_Survial_Prediction_Web (this command will automatically create a django project with name Titanic_Survial_Prediction_Web inside your main project folder)
+
+    cd Titanic_Survial_Prediction_Web (cd into the django project created in the step above)
     
-    Watching for file changes with StatReloader
-    Performing system checks...
-    System check identified no issues (0 silenced).
-    You have 18 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
-    Run 'python manage.py migrate' to apply them.
-    June 21, 2022 - 18:42:57
-    Django version 4.0.5, using settings 'django_project.settings'
-    Starting development server at http://127.0.0.1:8000/
-    Quit the server with CONTROL-C.
+    Now if you followed the above steps correctly, just type in python manage.py runserver into your command prompt screen and then copy the link that appear on the command prompt (http://127.0.0.1:8000/) into a web browser. As soon as you hit enter, you would be able to see the below screen
 
-Django sta indicando che ci sono 18 migrazioni non applicate; le migrazioni un metodo usato da Django per modifiche al database dal python, e che Django ci lascia la possibilità di applicare a mano, evitando quindi un probabile errore in caso in cui le applicasse in maniera automatica.
+If the above web page also appears for you, then you have successfully completed the first step in creating your own django web application.
 
-Alla prima installazione Django ha delle app preinstallate che effettivamente hanno apportato modifiche al DB, e per questo Django ci chiede se vogliamo applicare le migrazioni
-* Per applicare le modifiche dovremo eseguire il comado **python manage.py migrate**
+If for some people this web page is not appearing, please refer to the above steps once again and see if in case you missed anything.
 
-**CREAZIONE APP IN DJANGO**
+Now using any IDE (PyCharm, Atom, VScode etc.) open your django project (Titanic_Survial_Prediction_Web)
 
-Per creare un'app in Django eseguire il comando **python manage.py startapp myapp** dove myapp è il nome dell'app che vogliamo creare all'interno di Django.
+Now inside the same folder where your urls.py is present, create a new python file with name ‘views.py’. This views file would be responsible for getting the input from any user using a web page, using the same input for generating predictions and then showing this prediction back to the user using a web page.
 
-Vedremo che è stata creata una cartella con il nome dell'app ed all'interno troveremo un file models.py dove inseriremo i nostri modelli.
+    Also, we need to move our ‘model.sav’ and ‘scaler.sav’ file inside the same folder as urls.py.
 
-Dopo l'inserimento dei modelli nella nostra app, se avviamo il Django server, noteremo che Django non avvierà la nuova app, questo perchò dovremo andare all'interno del file **settings.py** presente nella cartella del progetto ed inserire la nuova app nella lista **INSTALLED_APPS**
+Before moving any further, lets first complete the configuration for our django project. Inside our main project folder, create an empty folder by the name ‘templates’ (you can use any name but its recommended to follow a defined framework naming convention). This folder will be holding all out html files that we would be using in our project.
 
-la stringa dovrà essere inserita **ALL'INIZIO** della lista e definita come: **'myapp.apps.MyappConfig'**
+Now open the setting.py file and add ‘templates’ (or whatever name you have given to your html files folder) to the highlighted ‘DIRS’ list inside the ‘TEMPLATES’ list.
 
-**QUESTO INSERIMENTO DEVE ESSERE FATTO OGNI VOLTA CHE VIENE CREATA UN'APP**
+Now inside the urls.py file add the below code for configuring the urls for our website (different urls for different web pages).
 
-Dopo aver inserito la nuova app, l'applicazione fa parte di Django, che tuttavia ancora non conosce il fatto di voler aggiornare il database con delle nuove caratteristiche. Per farlo dobbiamo lanciare la migrazione che dipende da che cosa è stato inserito nel file **models.py** presente nella cartella del progetto.
+    # default present
+    from django.contrib import admin
+    from django.urls import path
 
-Per chiedere a Django di preparare la migrazione a partire da un nuovo file eseguire i comandi:
+    # add this to import our views file
+    from Titanic_Survial_Prediction_Web import views
 
-**python manage.py makemigrations**
+    urlpatterns = [
+        path('admin/', admin.site.urls),
+        
+        # add these to configure our home page (default view) and result web page
+        path('', views.home, name='home'),
+        path('result/', views.result, name='result'),
+    ]
 
-**python manage.py migrate**
+We have first imported our views file inside the urls.py file and then inside the urlpatterns list added path for our home page (the default page whenever we open our web application instead of django default view) and the result page (for displaying the results to user) along with there respective names (using which they can be referred inside our html files).
 
-Noteremo che Django applicherà la migrazione, creerà dei nuovi file ed aggiornerò il DB.
+Now we need to define these two functions inside our views.py file. Along with these two, we will also create a getPredictions function that would be able to generate predictions by loading our pre-trained model.
 
-Riepilogo:
+The below code can be referred to do this task.
 
-* Creare Progetto Django
-* Creare App Django
-* Dentro App in Django c'è un file models
-* Il file models.py rappresenta la chiave dei modelli dati dove creare le tabelle dati
+    from django.shortcuts import render
 
-L'ultimo passaggio da fare è abilitare l'interfaccia WEB in Django; l'applicazione 'admin' gia presente sarà responsabile di questo.
+    # our home page view
+    def home(request):    
+        return render(request, 'index.html')
 
-Per abilitarla dobbiamo:
-1. Creare un utente
-2. Indicare a Django che vogliamo visualizzare la nostra applicazione
+    # custom method for generating predictions
+    def getPredictions(pclass, sex, age, sibsp, parch, fare, C, Q, S):
+        import pickle
+        model = pickle.load(open("titanic_survival_ml_model.sav", "rb"))
+        scaled = pickle.load(open("scaler.sav", "rb"))
+        prediction = model.predict(sc.transform([[pclass, sex, age, sibsp, parch, fare, C, Q, S]]))
+        
+        if prediction == 0:
+            return "not survived"
+        elif prediction == 1:
+            return "survived"
+        else:
+            return "error"
+            
 
-    1. Creare un utente amministratore con il comando **python manage.py createsuperuser**
-    * Indicare i dati richiesti come e-mail e password 
-    * Accedre alla console amministrazione aggiungendo /admin alla fine dell'url dopo aver eseguito il comando per far partire il django server
+    # our result page view
+    def result(request):
+        pclass = int(request.GET['pclass'])
+        sex = int(request.GET['sex'])
+        age = int(request.GET['age'])
+        sibsp = int(request.GET['sibsp'])
+        parch = int(request.GET['parch'])
+        fare = int(request.GET['fare'])
+        embC = int(request.GET['embC'])
+        embQ = int(request.GET['embQ'])
+        embS = int(request.GET['embS'])
 
-    2. Per rendere la nostra applicazione modificabile dall'interfaccia admin di Django editare il file *admin.py* presente nella cartella dell'applicazione ed aggiungere le stringhe necessarie per esempio (Question è il nome di un modello di esempio) come definite nelle classi in models.py
-    * **from .models import Question**
-    * **admin.site.register(Question)**
+        result = getPredictions(pclass, sex, age, sibsp, parch, fare, embC, embQ, embS)
 
-Se accediamo a questo punto all'interfaccia admin della nostra applicazione vedremo che sarà presente il nostro modello che in base alle sue caratteristiche sarò in grado di effettuare inserimenti nel Database con le relative relazioni.
+        return render(request, 'result.html', {'result':result})
 
+the result method is responsible for collecting all the information that the user have entered and then return the result as a key-value pair.
+
+*Note: It is always recommended to create getPredictions method inside a separate python file and then import it inside our views.py file. Here for keeping things simple and straight forward, we have made the function inside the views.py file.*
+
+Now that we have worked on the backend logic, lets create our web pages to accept the input from user through forms and display results.
+
+Inside the “templates” folder, create an index.html file. This index.html would be our home page and will have our form that we will use for getting input from our user.
+
+    <!DOCTYPE html>
+    <html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Home page</title>
+    </head>
+    <body>
+        <h1>Titanic survival prediction</h1>
+        <form action="{% urls 'result' %}">
+        {% csrf_token %}
+        
+        <p>Passenger Class:</p>
+        <input type="text" name="pclass">
+        <br>
+
+        <p>Sex:</p>
+        <input type="text" name="sex">
+        <br>
+
+        <p>Age:</p>
+        <input type="text" name="age">
+        <br>
+
+        <p>Sibsp:</p>
+        <input type="text" name="sibsp">
+        <br>
+
+        <p>Parch:</p>
+        <input type="text" name="parch">
+        <br>
+
+        <p>Fare:</p>
+        <input type="text" name="fare">
+        <br>
+
+        <p>Embark Category C:</p>
+        <input type="text" name="embC">
+        <br>
+
+        <p>Embark Category Q:</p>
+        <input type="text" name="embQ">
+        <br>
+        
+        <p>Embark Category S:</p>
+        <input type="text" name="embS">
+        <br>
+
+        <input type="submit" value='Get Predictions'>
+        </form>
+    </body>
+    </html>
+
+There are couple of things we need to understand here before moving forward.
+
+1. Forms action parameter → View that collects the form data, generate predictions using this data and then redirects to the webpage with result. For django we have a specific way of doing this- **action = “{% urls ‘name_of_url’ %}”**. In our case the name of our url is result (as we have already provided this in our urls.py file).
+2. Also, along with this we need to provide a **{% csrf_token %}** (i.e. cross site reference forgery token) which makes data handling in django more secure. This part is mandatory and hence it should always be the first line inside your form tags.
+
+Note: {% .. %} are called scripting tags.
+
+Once we have created our **index.html** file, we then need to create our **result.html** that will display the prediction to the user.
+
+    <!DOCTYPE html>
+    <html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Result</title>
+    </head>
+    <body>
+        <h1>Prediction</h1>
+
+        {{ result }}
+        
+    </body>
+    </html>
+
+Inside the “{{ }}” tags, we specify the name of the key which contains our result (in our case it is result).
+
+Once you have completed all these steps, press CTRL + C in your command prompt to stop the server and then restart it using “python manage.py runserver” command. Now reopen the link in your browser. This time the default page would be the index.html webpage which have our input form.
+
+Once you fill in the respective data and submit the form, you will be redirected to the result.html page which will display the prediction for your input data.
+
+So this is how, we create a simple yet powerful ML based django web application that is dynamic in nature (accepts input from user) and make predictions based on Machine Learning model.
+
+If you want to learn more about django, please refer to the django documentation (link below).
+
+https://www.djangoproject.com/

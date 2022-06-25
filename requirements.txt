@@ -1,4 +1,1 @@
 Django
-scikit-learn
-pandas
-matplotlib
